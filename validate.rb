@@ -2,9 +2,10 @@ require 'digest'
 require 'csv'
 require_relative 'csvreader'
 
-
+#Função para validar o login
+#com hash MD5, retornando o tempo
+#da consulta
 def validateMD5 (user, pass)
-
   csv = CSV.read('md5.txt', :headers=>true)
   start = DateTime.now.strftime('%Q').to_i
   pass = Digest::MD5.hexdigest(pass)
@@ -18,8 +19,10 @@ def validateMD5 (user, pass)
   return false
 end
 
+#Função para validar o login
+#com hash SHA1, retornando o
+#tempo da consulta
 def validateSHA1 (user, pass)
-
   csv = CSV.read('sha1.txt', :headers=>true)
   start = DateTime.now.strftime('%Q').to_i
   pass = Digest::SHA1.hexdigest(pass)
@@ -31,9 +34,11 @@ def validateSHA1 (user, pass)
     end
   end
   return false
-
 end
 
+#Função para validar o login
+#com hash SHA256, retornando o
+# tempo da consulta
 def validateSHA256 (user, pass)
 
   csv = CSV.read('sha256.txt', :headers=>true)

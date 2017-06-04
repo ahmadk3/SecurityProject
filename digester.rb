@@ -2,6 +2,7 @@ require_relative 'csvreader'
 require 'digest'
 require 'csv'
 
+#leitura da base decriptada
 startTime = DateTime.now.strftime('%Q').to_i
 database = fileReader 'base.txt'
 CSV.open('decripted.txt', 'w',
@@ -12,14 +13,13 @@ CSV.open('decripted.txt', 'w',
   end
 end
 endTime = DateTime.now.strftime('%Q').to_i
-
 puts ((endTime - startTime)/1000.0).to_s() + " seconds to decrypt the base"
 
 sha256 = 0
 sha1 = 0
 md5 = 0
 
-#SHA256
+#aplicaçaõ do SHA256 nas senhas
 startTime = DateTime.now.strftime('%Q').to_i
 CSV.open('sha256.txt', 'w',
          :write_headers=> true,
@@ -31,7 +31,7 @@ end
 endTime = DateTime.now.strftime('%Q').to_i
 sha256 += (endTime - startTime)/1000.0
 
-#SHA1
+#aplicaçaõ do SHA1 nas senhas
 startTime = DateTime.now.strftime('%Q').to_i
 CSV.open('sha1.txt', 'w',
          :write_headers=> true,
@@ -43,7 +43,7 @@ end
 endTime = DateTime.now.strftime('%Q').to_i
 sha1 += (endTime - startTime)/1000.0
 
-#MD5
+#aplicaçaõ do MD5 nas senhas
 startTime = DateTime.now.strftime('%Q').to_i
 CSV.open('md5.txt', 'w',
          :write_headers=> true,
@@ -56,6 +56,6 @@ end
 endTime = DateTime.now.strftime('%Q').to_i
 md5 += (endTime - startTime)/1000.0
 
-puts (sha256/1.0).to_s + " SHA256"
-puts (sha1/1.0).to_s + " SHA1"
-puts (md5/1.0).to_s + " MD5"
+puts (sha256).to_s + " SHA256"
+puts (sha1).to_s + " SHA1"
+puts (md5).to_s + " MD5"
