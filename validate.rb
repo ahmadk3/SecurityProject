@@ -1,13 +1,17 @@
 require 'digest'
 require 'csv'
+require_relative 'csvreader'
 
 
 def validateMD5 (user, pass)
+
   csv = CSV.read('md5.txt', :headers=>true)
+  start = DateTime.now.strftime('%Q').to_i
+  pass = Digest::MD5.hexdigest(pass)
   csv.each do |row|
     if row["user"] == user
-      if row["pass"] == Digest::MD5.hexdigest(pass)
-        return true
+      if row["pass"] == pass
+        return DateTime.now.strftime('%Q').to_i - start
       end
     end
   end
@@ -15,11 +19,14 @@ def validateMD5 (user, pass)
 end
 
 def validateSHA1 (user, pass)
+
   csv = CSV.read('sha1.txt', :headers=>true)
+  start = DateTime.now.strftime('%Q').to_i
+  pass = Digest::SHA1.hexdigest(pass)
   csv.each do |row|
     if row["user"] == user
-      if row["pass"] == Digest::SHA1.hexdigest(pass)
-        return true
+      if row["pass"] == pass
+        return DateTime.now.strftime('%Q').to_i - start
       end
     end
   end
@@ -28,11 +35,14 @@ def validateSHA1 (user, pass)
 end
 
 def validateSHA256 (user, pass)
+
   csv = CSV.read('sha256.txt', :headers=>true)
+  start = DateTime.now.strftime('%Q').to_i
+  pass = Digest::SHA256.hexdigest(pass)
   csv.each do |row|
     if row["user"] == user
-      if row["pass"] == Digest::SHA256.hexdigest(pass)
-        return true
+      if row["pass"] == pass
+        return DateTime.now.strftime('%Q').to_i - start
       end
     end
   end
@@ -41,19 +51,25 @@ def validateSHA256 (user, pass)
 end
 
 def validateCC (user, pass)
+  csv = CSV.read('base.txt', :col_sep => "|")
+  start = DateTime.now.strftime('%Q').to_i
+  csv.each do |row|
+    if row[0] == user
+      if row[1] == unrotate(pass, -12)
+        return DateTime.now.strftime('%Q').to_i - start
+      end
+    end
+  end
+  return false
 
 end
 
 
-start = DateTime.now.strftime('%Q').to_i
-puts validateMD5 "Guilherme.Lopes.Meireles","CGWHUFIE"
-endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - start)/1000.0).to_s + " MD5"
-start = DateTime.now.strftime('%Q').to_i
-puts validateSHA1 "Guilherme.Lopes.Meireles","CGWHUFIE"
-endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - start)/1000.0).to_s + " SHA1"
-start = DateTime.now.strftime('%Q').to_i
-puts validateSHA256 "Guilherme.Lopes.Meireles","CGWHUFIE"
-endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - start)/1000.0).to_s + " SHA256"
+puts validateMD5 'Rogerio.Bandit.Santos', 'KUKNANFEJ'
+
+puts validateSHA1 'Rogerio.Bandit.Santos', 'KUKNANFEJ'
+
+puts validateSHA256 'Rogerio.Bandit.Santos', 'KUKNANFEJ'
+
+puts validateCC 'Rogerio.Bandit.Santos', 'KUKNANFEJ'
+
