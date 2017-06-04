@@ -1,39 +1,61 @@
 require_relative 'csvreader'
 require 'digest'
+require 'csv'
 
 startTime = DateTime.now.strftime('%Q').to_i
 database = fileReader 'base.txt'
+CSV.open('decripted.txt', 'w',
+         :write_headers=> true,
+         :headers => ["user","pass"]) do |csv|
+  database.each do |row|
+    csv << [row[0], row[1]]
+  end
+end
 endTime = DateTime.now.strftime('%Q').to_i
 
 puts ((endTime - startTime)/1000.0).to_s() + " seconds to decrypt the base"
 
+sha256 = 0
+sha1 = 0
+md5 = 0
 
 #SHA256
-file = File.open('sha256.txt', 'w')
 startTime = DateTime.now.strftime('%Q').to_i
-database.each do |row|
-  file.write(row[0] + '|' + (Digest::SHA256.digest row[1]) + "\n")
+CSV.open('sha256.txt', 'w',
+         :write_headers=> true,
+         :headers => ["user","pass"]) do |csv|
+  database.each do |row|
+    csv << [row[0], Digest::SHA256.hexdigest(row[1])]
+  end
 end
 endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - startTime)/1000.0).to_s() + " seconds to SHA256"
-file.close
+sha256 += (endTime - startTime)/1000.0
 
 #SHA1
-file = File.open('sha1.txt', 'w')
 startTime = DateTime.now.strftime('%Q').to_i
-database.each do |row|
-  file.write(row[0] + '|' + (Digest::SHA1.digest row[1]) + "\n")
+CSV.open('sha1.txt', 'w',
+         :write_headers=> true,
+         :headers => ["user","pass"]) do |csv|
+  database.each do |row|
+    csv << [row[0], Digest::SHA1.hexdigest(row[1])]
+  end
 end
 endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - startTime)/1000.0).to_s() + " seconds to SHA1"
-file.close
+sha1 += (endTime - startTime)/1000.0
 
 #MD5
-file = File.open('md5.txt', 'w')
 startTime = DateTime.now.strftime('%Q').to_i
-database.each do |row|
-  file.write(row[0] + '|' + (Digest::MD5.digest row[1]) + "\n")
+CSV.open('md5.txt', 'w',
+         :write_headers=> true,
+         :headers => ["user","pass"]) do |csv|
+  database.each do |row|
+    m = Digest::MD5.hexdigest(row[1])
+    csv << [row[0], m]
+  end
 end
 endTime = DateTime.now.strftime('%Q').to_i
-puts ((endTime - startTime)/1000.0).to_s() + " seconds to MD5"
-file.close
+md5 += (endTime - startTime)/1000.0
+
+puts (sha256/1.0).to_s + " SHA256"
+puts (sha1/1.0).to_s + " SHA1"
+puts (md5/1.0).to_s + " MD5"
